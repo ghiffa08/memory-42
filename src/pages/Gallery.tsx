@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, User, Calendar, Image as ImageIcon } from 'lucide-react';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PhotoModal from '../components/PhotoModal';
 

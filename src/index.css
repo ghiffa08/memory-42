@@ -1,0 +1,104 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Pixel-perfect styling */
+* {
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Custom pixel button styles */
+@layer components {
+  .pixel-btn {
+    @apply font-retro text-sm px-6 py-3 bg-pixel-green text-retro-dark 
+           border-4 border-black shadow-pixel transition-all duration-150
+           hover:shadow-pixel-hover hover:translate-x-[-2px] hover:translate-y-[-2px]
+           active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+  }
+  
+  .pixel-card {
+    @apply bg-gradient-to-br from-slate-800 to-slate-900 border-4 border-pixel-cyan
+           shadow-pixel rounded-none relative overflow-hidden;
+  }
+  
+  .pixel-input {
+    @apply bg-retro-dark border-4 border-pixel-blue text-retro-accent
+           font-pixel text-lg px-4 py-3 rounded-none
+           focus:border-pixel-yellow focus:shadow-glow outline-none
+           placeholder:text-gray-500;
+  }
+  
+  .retro-gradient {
+    @apply bg-gradient-to-r from-pixel-purple via-pixel-pink to-pixel-orange;
+  }
+}
+
+/* Scrollbar styling */
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #0F0F23;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00FF41, #39FF14);
+  border: 2px solid #0F0F23;
+}
+
+/* Loading animation */
+.loading-dots {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 16px;
+}
+
+.loading-dots div {
+  position: absolute;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00FF41;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.loading-dots div:nth-child(1) {
+  left: 6px;
+  animation: loading1 0.6s infinite;
+}
+
+.loading-dots div:nth-child(2) {
+  left: 6px;
+  animation: loading2 0.6s infinite;
+}
+
+.loading-dots div:nth-child(3) {
+  left: 26px;
+  animation: loading2 0.6s infinite;
+}
+
+.loading-dots div:nth-child(4) {
+  left: 45px;
+  animation: loading3 0.6s infinite;
+}
+
+@keyframes loading1 {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+@keyframes loading3 {
+  0% { transform: scale(1); }
+  100% { transform: scale(0); }
+}
+
+@keyframes loading2 {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(19px, 0); }
+}

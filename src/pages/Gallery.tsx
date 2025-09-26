@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, User, Calendar, Image as ImageIcon } from 'lucide-react';
+import { collection, orderBy, query, doc, updateDoc, increment, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PhotoModal from '../components/PhotoModal';
 
@@ -77,12 +79,57 @@ const Gallery: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
+    // Set up real-time listener for Firestore data
+    const q = query(collection(db, 'memories'), orderBy('timestamp', 'desc'));
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const memories: GalleryItem[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        memories.push({
+          id: doc.id,
+          type: data.type,
+          name: data.name,
+          message: data.message,
+          imageUrl: data.imageUrl,
+          timestamp: data.timestamp.toDate(),
+          likes: data.likes || 0
+        });
+      });
+      
+      // If no data in Firebase, use dummy data for demonstration
+      if (memories.length === 0) {
+        setItems(dummyData);
+      } else {
+        setItems(memories);
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching memories:', error);
+      // Fallback to dummy data on error
       setItems(dummyData);
       setLoading(false);
-    }, 1500);
+    });
+
+    return () => unsubscribe();
   }, []);
+
+  const handleLike = async (itemId: string) => {
+    try {
+      const itemRef = doc(db, 'memories', itemId);
+      await updateDoc(itemRef, {
+        likes: increment(1)
+      });
+    } catch (error) {
+      console.error('Error updating likes:', error);
+      // For dummy data, update locally
+      setItems(prev => prev.map(item => 
+        item.id === itemId 
+          ? { ...item, likes: item.likes + 1 }
+          : item
+      ));
+    }
+  };
 
   const filteredItems = items.filter(item => {
     if (filter === 'photos') return item.type === 'photo';
@@ -239,6 +286,7 @@ const Gallery: React.FC = () => {
                     className="flex items-center space-x-2 text-pixel-red hover:text-pixel-pink transition-colors"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => handleLike(item.id)}
                   >
                     <Heart className="w-4 h-4" />
                     <span className="font-pixel text-sm">{item.likes}</span>

@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'info';
 
@@ -29,7 +27,7 @@ interface ToastProviderProps {
 }
 
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [, setToasts] = useState<Toast[]>([]);
 
   const showToast = (type: ToastType, message: string) => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -45,19 +43,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
 
   const removeToast = (id: string) => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
-  };
-
-  const getToastIcon = (type: ToastType) => {
-    switch (type) {
-      case 'success':
-        return <CheckCircle className="w-5 h-5" />;
-      case 'error':
-        return <XCircle className="w-5 h-5" />;
-      case 'info':
-        return <AlertCircle className="w-5 h-5" />;
-      default:
-        return null;
-    }
   };
 
   return (
